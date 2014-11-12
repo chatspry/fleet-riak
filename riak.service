@@ -1,0 +1,12 @@
+[Unit]
+Description=riak
+
+[Service]
+TimeoutStartSec=0
+EnvironmentFile=/etc/environment
+ExecStartPre=/usr/bin/docker pull chatspry/fleet-riak
+ExecStart=/usr/bin/docker run --rm --name riak -p 80:80 -p 443:443 -e HOST_IP=${COREOS_PUBLIC_IPV4} chatspry/fleet-riak
+ExecStop=/usr/bin/docker kill riak
+
+[X-Fleet]
+X-Conflicts=riak.service

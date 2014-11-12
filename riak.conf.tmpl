@@ -1,0 +1,531 @@
+## Generated with confd
+##
+## Where to emit the default log messages (typically at 'info'
+## severity):
+## off: disabled
+## file: the file specified by log.console.file
+## console: to standard output (seen when using `riak attach-direct`)
+## both: log.console.file and standard out.
+##
+## Default: file
+##
+## Acceptable values:
+##   - one of: off, file, console, both
+log.console = {{if exists "/log.console"}}{{getv "/log.console"}}{{else}}file{{end}}
+
+## The severity level of the console log, default is 'info'.
+##
+## Default: info
+##
+## Acceptable values:
+##   - one of: debug, info, notice, warning, error, critical, alert, emergency, none
+log.console.level = {{if exists "/log.console.level"}}{{getv "/log.console"}}{{else}}info{{end}}
+
+## When 'log.console' is set to 'file' or 'both', the file where
+## console messages will be logged.
+##
+## Default: $(platform_log_dir)/console.log
+##
+## Acceptable values:
+##   - the path to a file
+log.console.file = {{if exists "/log.console.file"}}{{getv "/log.console.file"}}{{else}}$(platform_log_dir)/console.log{{end}}
+
+## The file where error messages will be logged.
+##
+## Default: $(platform_log_dir)/error.log
+##
+## Acceptable values:
+##   - the path to a file
+log.error.file = {{if exists "/log.error.file"}}{{getv "/log.error.file"}}{{else}}$(platform_log_dir)/error.log{{end}}
+
+## When set to 'on', enables log output to syslog.
+##
+## Default: off
+##
+## Acceptable values:
+##   - on or off
+log.syslog = {{if exists "/log.syslog"}}{{getv "/log.syslog"}}{{else}}off{{end}}
+
+## Whether to enable the crash log.
+##
+## Default: on
+##
+## Acceptable values:
+##   - on or off
+log.crash = {{if exists "/log.crash"}}{{getv "/log.crash"}}{{else}}on{{end}}
+
+## If the crash log is enabled, the file where its messages will
+## be written.
+##
+## Default: $(platform_log_dir)/crash.log
+##
+## Acceptable values:
+##   - the path to a file
+log.crash.file = {{if exists "/log.crash.file"}}{{getv "/log.crash.file"}}{{else}}$(platform_log_dir)/crash.log{{end}}
+
+## Maximum size in bytes of individual messages in the crash log
+##
+## Default: 64KB
+##
+## Acceptable values:
+##   - a byte size with units, e.g. 10GB
+log.crash.maximum_message_size = {{if exists "/log.crash.maximum_message_size"}}{{getv "/log.crash.maximum_message_size"}}{{else}}64KB{{end}}
+
+## Maximum size of the crash log in bytes, before it is rotated
+##
+## Default: 10MB
+##
+## Acceptable values:
+##   - a byte size with units, e.g. 10GB
+log.crash.size = {{if exists "/log.crash.size"}}{{getv "/log.crash.size"}}{{else}}10MB{{end}}
+
+## The schedule on which to rotate the crash log.  For more
+## information see:
+## https://github.com/basho/lager/blob/master/README.md#internal-log-rotation
+##
+## Default: $D0
+##
+## Acceptable values:
+##   - text
+log.crash.rotation = {{if exists "/log.crash.rotation"}}{{getv "/log.crash.rotation"}}{{else}}$D0{{end}}
+
+## The number of rotated crash logs to keep. When set to
+## 'current', only the current open log file is kept.
+##
+## Default: 5
+##
+## Acceptable values:
+##   - an integer
+##   - the text "current"
+log.crash.rotation.keep = {{if exists "/log.crash.rotation.keep"}}{{getv "/log.crash.rotation.keep"}}{{else}}5{{end}}
+
+## Name of the Erlang node
+##
+## Default: riak@127.0.0.1
+##
+## Acceptable values:
+##   - text
+nodename = {{if exists "/nodename"}}{{getv "/nodename"}}{{else}}riak@127.0.0.1{{end}}
+
+## Cookie for distributed node communication.  All nodes in the
+## same cluster should use the same cookie or they will not be able to
+## communicate.
+##
+## Default: riak
+##
+## Acceptable values:
+##   - text
+distributed_cookie = {{if exists "/distributed_cookie"}}{{getv "/distributed_cookie"}}{{else}}riak{{end}}
+
+## Sets the number of threads in async thread pool, valid range
+## is 0-1024. If thread support is available, the default is 64.
+## More information at: http://erlang.org/doc/man/erl.html
+##
+## Default: 64
+##
+## Acceptable values:
+##   - an integer
+erlang.async_threads = {{if exists "/erlang.async_threads"}}{{getv "/erlang.async_threads"}}{{else}}64{{end}}
+
+## The number of concurrent ports/sockets
+## Valid range is 1024-134217727
+##
+## Default: 65536
+##
+## Acceptable values:
+##   - an integer
+erlang.max_ports = {{if exists "/erlang.max_ports"}}{{getv "/erlang.max_ports"}}{{else}}65536{{end}}
+
+## Set scheduler forced wakeup interval. All run queues will be
+## scanned each Interval milliseconds. While there are sleeping
+## schedulers in the system, one scheduler will be woken for each
+## non-empty run queue found. An Interval of zero disables this
+## feature, which also is the default.
+## This feature is a workaround for lengthy executing native code, and
+## native code that do not bump reductions properly.
+## More information: http://www.erlang.org/doc/man/erl.html#+sfwi
+##
+## Default: 500
+##
+## Acceptable values:
+##   - an integer
+## erlang.schedulers.force_wakeup_interval = 500
+{{if exists "/erlang.schedulers.force_wakeup_interval"}}
+erlang.schedulers.force_wakeup_interval = {{getv "/erlang.schedulers.force_wakeup_interval"}}
+{{end}}
+
+## Enable or disable scheduler compaction of load. By default
+## scheduler compaction of load is enabled. When enabled, load
+## balancing will strive for a load distribution which causes as many
+## scheduler threads as possible to be fully loaded (i.e., not run out
+## of work). This is accomplished by migrating load (e.g. runnable
+## processes) into a smaller set of schedulers when schedulers
+## frequently run out of work. When disabled, the frequency with which
+## schedulers run out of work will not be taken into account by the
+## load balancing logic.
+## More information: http://www.erlang.org/doc/man/erl.html#+scl
+##
+## Default: false
+##
+## Acceptable values:
+##   - one of: true, false
+## erlang.schedulers.compaction_of_load = false
+{{if exists "/erlang.schedulers.compaction_of_load"}}
+erlang.schedulers.compaction_of_load = {{getv "/erlang.schedulers.compaction_of_load"}}
+{{end}}
+
+## Enable or disable scheduler utilization balancing of load. By
+## default scheduler utilization balancing is disabled and instead
+## scheduler compaction of load is enabled which will strive for a
+## load distribution which causes as many scheduler threads as
+## possible to be fully loaded (i.e., not run out of work). When
+## scheduler utilization balancing is enabled the system will instead
+## try to balance scheduler utilization between schedulers. That is,
+## strive for equal scheduler utilization on all schedulers.
+## More information: http://www.erlang.org/doc/man/erl.html#+sub
+##
+## Acceptable values:
+##   - one of: true, false
+## erlang.schedulers.utilization_balancing = true
+{{if exists "/erlang.schedulers.utilization_balancing"}}
+erlang.schedulers.utilization_balancing = {{getv "/erlang.schedulers.utilization_balancing"}}
+{{end}}
+
+## Number of partitions in the cluster (only valid when first
+## creating the cluster). Must be a power of 2, minimum 8 and maximum
+## 1024.
+##
+## Default: 64
+##
+## Acceptable values:
+##   - an integer
+## ring_size = 64
+{{if exists "/ring_size"}}
+ring_size = {{getv "/ring_size"}}
+{{end}}
+
+## Number of concurrent node-to-node transfers allowed.
+##
+## Default: 2
+##
+## Acceptable values:
+##   - an integer
+## transfer_limit = 2
+{{if exists "/transfer_limit"}}
+transfer_limit = {{getv "/transfer_limit"}}
+{{end}}
+
+## Default cert location for https can be overridden
+## with the ssl config variable, for example:
+##
+## Acceptable values:
+##   - the path to a file
+## ssl.certfile = $(platform_etc_dir)/cert.pem
+{{if exists "/ssl.certfile"}}
+ssl.certfile = {{getv "/ssl.certfile"}}
+{{end}}
+
+## Default key location for https can be overridden with the ssl
+## config variable, for example:
+##
+## Acceptable values:
+##   - the path to a file
+## ssl.keyfile = $(platform_etc_dir)/key.pem
+{{if exists "/ssl.keyfile"}}
+ssl.keyfile = {{getv "/ssl.keyfile"}}
+{{end}}
+
+## Default signing authority location for https can be overridden
+## with the ssl config variable, for example:
+##
+## Acceptable values:
+##   - the path to a file
+## ssl.cacertfile = $(platform_etc_dir)/cacertfile.pem
+{{if exists "/ssl.cacertfile"}}
+ssl.cacertfile = {{getv "/ssl.cacertfile"}}
+{{end}}
+
+## DTrace support Do not enable 'dtrace' unless your Erlang/OTP
+## runtime is compiled to support DTrace.  DTrace is available in
+## R15B01 (supported by the Erlang/OTP official source package) and in
+## R14B04 via a custom source repository & branch.
+##
+## Default: off
+##
+## Acceptable values:
+##   - on or off
+dtrace = {{if exists "/dtrace"}}{{getv "/dtrace"}}{{else}}off{{end}}
+
+## Platform-specific installation paths (substituted by rebar)
+##
+## Default: /usr/sbin
+##
+## Acceptable values:
+##   - the path to a directory
+platform_bin_dir = /usr/sbin{{if exists "/platform_bin_dir"}}{{getv "/platform_bin_dir"}}{{else}}/usr/sbin{{end}}
+
+##
+## Default: /var/lib/riak
+##
+## Acceptable values:
+##   - the path to a directory
+platform_data_dir = {{if exists "/platform_data_dir"}}{{getv "/platform_data_dir"}}{{else}}/var/lib/riak{{end}}
+
+##
+## Default: /etc/riak
+##
+## Acceptable values:
+##   - the path to a directory
+platform_etc_dir = {{if exists "/platform_etc_dir"}}{{getv "/platform_etc_dir"}}{{else}}/etc/riak{{end}}
+
+##
+## Default: /usr/lib/riak/lib
+##
+## Acceptable values:
+##   - the path to a directory
+platform_lib_dir = {{if exists "/platform_lib_dir"}}{{getv "/platform_lib_dir"}}{{else}}/usr/lib/riak/lib{{end}}
+
+##
+## Default: /var/log/riak
+##
+## Acceptable values:
+##   - the path to a directory
+platform_log_dir = {{if exists "/platform_log_dir"}}{{getv "/platform_log_dir"}}{{else}}/var/log/riak{{end}}
+
+## Enable consensus subsystem. Set to 'on' to enable the
+## consensus subsystem used for strongly consistent Riak operations.
+##
+## Default: off
+##
+## Acceptable values:
+##   - on or off
+## strong_consistency = on
+{{if exists "/strong_consistency"}}
+strong_consistency = {{getv "/strong_consistency"}}
+{{end}}
+
+## listener.http.<name> is an IP address and TCP port that the Riak
+## HTTP interface will bind.
+##
+## Default: 127.0.0.1:8098
+##
+## Acceptable values:
+##   - an IP/port pair, e.g. 127.0.0.1:10011
+listener.http.internal = {{if exists "/listener.http.internal"}}{{getv "/listener.http.internal"}}{{else}}127.0.0.1:8098{{end}}
+
+## listener.protobuf.<name> is an IP address and TCP port that the Riak
+## Protocol Buffers interface will bind.
+##
+## Default: 127.0.0.1:8087
+##
+## Acceptable values:
+##   - an IP/port pair, e.g. 127.0.0.1:10011
+listener.protobuf.internal = {{if exists "/listener.protobuf.internal"}}{{getv "/listener.protobuf.internal"}}{{else}}127.0.0.1:8087{{end}}
+
+## The maximum length to which the queue of pending connections
+## may grow. If set, it must be an integer > 0. If you anticipate a
+## huge number of connections being initialized *simultaneously*, set
+## this number higher.
+##
+## Default: 128
+##
+## Acceptable values:
+##   - an integer
+## protobuf.backlog = 128
+{{if exists "/protobuf.backlog"}}
+protobuf.backlog = {{getv "/protobuf.backlog"}}
+{{end}}
+
+## listener.https.<name> is an IP address and TCP port that the Riak
+## HTTPS interface will bind.
+##
+## Acceptable values:
+##   - an IP/port pair, e.g. 127.0.0.1:10011
+## listener.https.internal = 127.0.0.1:8098
+{{if exists "/listener.https.internal"}}
+listener.https.internal = {{getv "/listener.https.internal"}}
+{{end}}
+
+## How Riak will repair out-of-sync keys. Some features require
+## this to be set to 'active', including search.
+## * active: out-of-sync keys will be repaired in the background
+## * passive: out-of-sync keys are only repaired on read
+## * active-debug: like active, but outputs verbose debugging
+## information
+##
+## Default: active
+##
+## Acceptable values:
+##   - one of: active, passive, active-debug
+anti_entropy = {{if exists "/anti_entropy"}}{{getv "/anti_entropy"}}{{else}}active{{end}}
+
+## Specifies the storage engine used for Riak's key-value data
+## and secondary indexes (if supported).
+##
+## Default: bitcask
+##
+## Acceptable values:
+##   - one of: bitcask, leveldb, memory, multi
+storage_backend = {{if exists "/storage_backend"}}{{getv "/storage_backend"}}{{else}}bitcask{{end}}
+
+## Controls which binary representation of a riak value is stored
+## on disk.
+## * 0: Original erlang:term_to_binary format. Higher space overhead.
+## * 1: New format for more compact storage of small values.
+##
+## Default: 1
+##
+## Acceptable values:
+##   - the integer 1
+##   - the integer 0
+object.format = {{if exists "/object.format"}}{{getv "/object.format"}}{{else}}1{{end}}
+
+## Reading or writing objects bigger than this size will write a
+## warning in the logs.
+##
+## Default: 5MB
+##
+## Acceptable values:
+##   - a byte size with units, e.g. 10GB
+object.size.warning_threshold = {{if exists "/object.size.warning_threshold"}}{{getv "/object.size.warning_threshold"}}{{else}}5MB{{end}}
+
+## Writing an object bigger than this will send a failure to the
+## client.
+##
+## Default: 50MB
+##
+## Acceptable values:
+##   - a byte size with units, e.g. 10GB
+object.size.maximum = {{if exists "/object.size.maximum"}}{{getv "/object.size.maximum"}}{{else}}50MB{{end}}
+
+## Writing an object with more than this number of siblings will
+## generate a warning in the logs.
+##
+## Default: 25
+##
+## Acceptable values:
+##   - an integer
+object.siblings.warning_threshold = {{if exists "/object.siblings.warning_threshold"}}{{getv "/object.siblings.warning_threshold"}}{{else}}25{{end}}
+
+## Writing an object with more than this number of siblings will
+## send a failure to the client.
+##
+## Default: 100
+##
+## Acceptable values:
+##   - an integer
+object.siblings.maximum = {{if exists "/object.siblings.maximum"}}{{getv "/object.siblings.maximum"}}{{else}}100{{end}}
+
+## A path under which bitcask data files will be stored.
+##
+## Default: $(platform_data_dir)/bitcask
+##
+## Acceptable values:
+##   - the path to a directory
+bitcask.data_root = {{if exists "/bitcask.data_root"}}{{getv "/bitcask.data_root"}}{{else}}$(platform_data_dir)/bitcask{{end}}
+
+## Configure how Bitcask writes data to disk.
+## erlang: Erlang's built-in file API
+## nif: Direct calls to the POSIX C API
+## The NIF mode provides higher throughput for certain
+## workloads, but has the potential to negatively impact
+## the Erlang VM, leading to higher worst-case latencies
+## and possible throughput collapse.
+##
+## Default: erlang
+##
+## Acceptable values:
+##   - one of: erlang, nif
+bitcask.io_mode = {{if exists "/bitcask.io_mode"}}{{getv "/bitcask.io_mode"}}{{else}}erlang{{end}}
+
+## Set to 'off' to disable the admin panel.
+##
+## Default: off
+##
+## Acceptable values:
+##   - on or off
+riak_control = {{if exists "/riak_control"}}{{getv "/riak_control"}}{{else}}off{{end}}
+
+## Authentication mode used for access to the admin panel.
+##
+## Default: off
+##
+## Acceptable values:
+##   - one of: off, userlist
+
+riak_control.auth.mode = {{if exists "/riak_control.auth.mode"}}{{getv "/riak_control.auth.mode"}}{{else}}off{{end}}
+
+## If riak control's authentication mode (riak_control.auth.mode)
+## is set to 'userlist' then this is the list of usernames and
+## passwords for access to the admin panel.
+## To create users with given names, add entries of the format:
+## riak_control.auth.user.USERNAME.password = PASSWORD
+## replacing USERNAME with the desired username and PASSWORD with the
+## desired password for that user.
+##
+## Acceptable values:
+##   - text
+## riak_control.auth.user.admin.password = pass
+{{if exists "/riak_control.auth.user.admin.password"}}
+riak_control.auth.user.admin.password = {{getv "/riak_control.auth.user.admin.password"}}
+{{end}}
+
+## This parameter defines the percentage of total server memory
+## to assign to LevelDB. LevelDB will dynamically adjust its internal
+## cache sizes to stay within this size.  The memory size can
+## alternately be assigned as a byte count via leveldb.maximum_memory
+## instead.
+##
+## Default: 70
+##
+## Acceptable values:
+##   - an integer
+leveldb.maximum_memory.percent = {{if exists "/leveldb.maximum_memory.percent"}}{{getv "/leveldb.maximum_memory.percent"}}{{else}}70{{end}}
+
+## To enable Search set this 'on'.
+##
+## Default: off
+##
+## Acceptable values:
+##   - on or off
+search = {{if exists "/search"}}{{getv "/search"}}{{else}}off{{end}}
+
+## How long Riak will wait for Solr to start. The start sequence
+## will be tried twice. If both attempts timeout, then the Riak node
+## will be shutdown. This may need to be increased as more data is
+## indexed and Solr takes longer to start. Values lower than 1s will
+## be rounded up to the minimum 1s.
+##
+## Default: 30s
+##
+## Acceptable values:
+##   - a time duration with units, e.g. '10s' for 10 seconds
+search.solr.start_timeout = {{if exists "/search.solr.start_timeout"}}{{getv "/search.solr.start_timeout"}}{{else}}30s{{end}}
+
+## The port number which Solr binds to.
+## NOTE: Binds on every interface.
+##
+## Default: 8093
+##
+## Acceptable values:
+##   - an integer
+search.solr.port = {{if exists "/search.solr.port"}}{{getv "/search.solr.port"}}{{else}}8093{{end}}
+
+## The port number which Solr JMX binds to.
+## NOTE: Binds on every interface.
+##
+## Default: 8985
+##
+## Acceptable values:
+##   - an integer
+search.solr.jmx_port = {{if exists "/search.solr.jmx_port"}}{{getv "/search.solr.jmx_port"}}{{else}}8985{{end}}
+
+## The options to pass to the Solr JVM.  Non-standard options,
+## i.e. -XX, may not be portable across JVM implementations.
+## E.g. -XX:+UseCompressedStrings
+##
+## Default: -d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops
+##
+## Acceptable values:
+##   - text
+search.solr.jvm_options = {{if exists "/search.solr.jvm_options"}}{{getv "/search.solr.jvm_options"}}{{else}}-d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops{{end}}
